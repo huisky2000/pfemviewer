@@ -1,4 +1,4 @@
-# FEM pressure viewer 1.0
+# FEM pressure viewer 1.1
 
 ## Open and share
 
@@ -13,8 +13,8 @@ Share the ZIP or its extracted contents. The HTML contains all viewer code and d
 | Action | Control |
 |---|---|
 | Rotate / pan / zoom | Left drag / right drag / mouse wheel |
-| Select or deselect panel | Left click without dragging |
-| Select a known element | Enter ID, then Add or Enter |
+| Select or deselect panel/node | Choose Elements or Nodes under Select objects; left click without dragging |
+| Select a known element/node | Enter ID, then Add or Enter |
 | Change model or load case | Left sidebar menus |
 | Fit / standard views | Fit button or F; view menu |
 | Step through time | Slider, previous/next buttons, left/right arrows |
@@ -25,8 +25,17 @@ Share the ZIP or its extracted contents. The HTML contains all viewer code and d
 | Inspect original samples | Hover on the history plot; readout gives nearest sample values/times |
 | Compare files | Select panels, open another file and select its panels |
 | Export | CSV, viewport PNG, plot PNG buttons |
+| Node/element ID labels | Separate Node IDs and Element IDs toggles under Appearance & IDs |
+| Surface / wireframe | Independent Surface contours and Mesh edges toggles |
+| Background / colour spectrum | Dark, white or custom background; five spectrum presets |
 
-The right-hand cards identify each curve by colour, source file, load case and element ID, and report extrema and occurrence times. Click a card's element title to activate its model/case. Selected panels have yellow outlines. The dashed plot line marks the active model's current time. Panel hover reports the element ID, contour value and arithmetic mean of its corner coordinates.
+The right-hand cards identify each curve by colour, source file, load case and element ID, and report extrema and occurrence times. Click a card's element title to activate its model/case. Selected panels have magenta outlines; selected nodes have magenta markers. Node cards and hover show the original X, Y, Z coordinates in file units, without shifting them to the display origin. No nodal pressure is inferred. The dashed plot line marks the active model's current time. Panel hover reports the element ID, contour value and arithmetic mean of its corner coordinates.
+
+Rotation automatically uses the bounding-box centre of selected elements and nodes in the active model (elements from the active load case only). Selection recentres the camera without changing its orientation or zoom. Clearing the selection restores the model centre. Fit and standard views keep the selection pivot and adjust distance to show the full model. Selections retained from other files do not affect the active rotation centre.
+
+ID labels use **N** for nodes and **E** for elements. Overlapping and surface-occluded labels are omitted; zoom in to reveal crowded IDs. Node selection uses a 10-pixel screen tolerance and omits nodes hidden behind a visible surface. Turning the surface off allows inspection through the wireframe. A fully hidden mesh cannot be element-picked. Node markers appear in Node mode or when Node IDs are enabled. Selected-object highlights remain visible independently of mesh edges.
+
+The default spectrum is a 12-band **Abaqus-style** blue-to-red rainbow; it is an approximation, not an exact imported Abaqus preset. Alternatives are the original blue/cyan/red spectrum, blue/white/red, Viridis and greyscale. Changing the spectrum does not change pressure values or limits. The viewport legend and exported PNG use the same colour mapping. White and custom backgrounds are supported in the viewer and PNG; exported PNGs include visible ID labels.
 
 ## Interpretation
 
@@ -48,4 +57,4 @@ The right-hand cards identify each curve by colour, source file, load case and e
 
 The release needs no development tools. To rebuild from source, run `pnpm install --frozen-lockfile --ignore-scripts`, then `node build.mjs`. The platform esbuild binary is supplied as an optional package. Build dependencies: Three.js 0.180.0 and esbuild 0.25.10. Do not include development dependencies in the release.
 
-Run `node --test tests/core.test.mjs` for analytic parser/numerical checks. Run `tests/generate_reference.py` with the project's Anaconda interpreter, then `node tests/real-files.mjs` to compare both input files with the existing Python reader. `node tests/browser.mjs` uses Playwright and installed Edge to test the actual release through file:// with network requests blocked. PLAYWRIGHT_PATH can point to another local Playwright installation, BROWSER_PATH to Chrome/Edge, and FEM_VIEWER_HTML to an extracted release file.
+Run `node --test tests/core.test.mjs tests/display.test.mjs` for analytic checks. Run `tests/generate_reference.py` with the project's Anaconda interpreter, then `node tests/real-files.mjs` to compare both input files with the existing Python reader. `node tests/browser.mjs` and `node tests/display-browser.mjs` use Playwright and installed Edge to test the actual release through file:// with network requests blocked. PLAYWRIGHT_PATH can point to another local Playwright installation, BROWSER_PATH to Chrome/Edge, and FEM_VIEWER_HTML to an extracted release file.
